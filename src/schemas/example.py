@@ -1,4 +1,3 @@
-from datetime import datetime
 from pydantic import BaseModel
 
 
@@ -6,8 +5,8 @@ class GetExampleResponse(BaseModel):
     id: int
     name: str
     enabled: bool
-    created_at: datetime
-    updated_at: datetime
+    created_at: str
+    updated_at: str
 
 
 class PostExampleRequest(BaseModel):

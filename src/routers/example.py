@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends
-from schemas.example import GetExampleResponse, PostExampleRequest
+from fastapi import APIRouter, Depends, Query
+from schemas.example import GetExampleResponse, PostExampleRequest, DeleteExampleRequest
 from schemas.basic_response import BasicResponse
-from fastapi import status
 from database import get_db
 from sqlalchemy.orm import Session
+from modules.example import CreateExample, GetExample, DeleteExample
 
 router = APIRouter(prefix="/example")
 
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/example")
 def get_examples(
     session: Session = Depends(get_db),
 ) -> BasicResponse[list[GetExampleResponse]]:
-    return BasicResponse()
+    return GetExample(session).execute()
 
 
 @router.post("/")
@@ -20,6 +20,11 @@ def post_example(
     example: PostExampleRequest,
     session: Session = Depends(get_db),
 ) -> BasicResponse[None]:
-    return BasicResponse(
-        message="Exemplo criado com sucesso", status_code=status.HTTP_201_CREATED
-    )()
+    return CreateExample(session, example).execute()
+
+
+@router.delete("/")
+def delete_example(
+    example: DeleteExampleRequest = Query(), session: Session = Depends(get_db)
+) -> BasicResponse[None]:
+    return DeleteExample(session, example).execute()
